@@ -1,0 +1,295 @@
+// server.js - SafeSiteWatch Backend Server
+const express = require('express');
+const cors = require('cors');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const axios = require('axios');
+require('dotenv').config();
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// In-memory database (for testing - replace with PostgreSQL later)
+const users = [];
+const websites = [];
+const monitoringResults = [];
+
+// JWT Secret (in production, use environment variable)
+const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-key-change-this';
+
+// Helper function to create JWT token
+const createToken = (userId) => {
+  return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
+};
+
+// Authentication middleware
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ success: false, message: 'No token provided' });
+  }
+
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ success: false, message: 'Invalid token' });
+    }
+    req.user = user;
+    next();
+  });
+};
+
+// ROUTES
+
+// Health check
+app.get('/api/health', (req, res) => {
+  res.json({ success: true, message: 'SafeSiteWatch API is running!' });
+});
+
+// Register
+app.post('/api/auth/register', async (req, res) => {
+  try {
+    const { email, password, companyName } = req.body;
+
+    // Check if user already exists
+    const existingUser = users.find(u => u.email === email);
+    if (existingUser) {
+      return res.status(400).json({ success: false, message: 'User already exists' });
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create user
+    const user = {
+      id: users.length + 1,
+      email,
+      password: hashedPassword,
+      companyName,
+      createdAt: new Date()
+    };
+
+    users.push(user);
+
+    // Create token
+    const token = createToken(user.id);
+
+    res.json({
+      success: true,
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        companyName: user.companyName
+      }
+    });
+  } catch (error) {
+    console.error('Register error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// Login
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Find user
+    const user = users.find(u => u.email === email);
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'Invalid credentials' });
+    }
+
+    // Check password
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
+      return res.status(400).json({ success: false, message: 'Invalid credentials' });
+    }
+
+    // Create token
+    const token = createToken(user.id);
+
+    res.json({
+      success: true,
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        companyName: user.companyName
+      }
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// Get Dashboard Data
+app.get('/api/dashboard', authenticateToken, (req, res) => {
+  try {
+    const userId = req.user.userId;
+    
+    // Get user's websites
+    const userWebsites = websites.filter(w => w.userId === userId);
+    
+    // Calculate security score (mock data for now)
+    const securityScore = userWebsites.length > 0 ? 92 : 100;
+    const activeAlerts = userWebsites.filter(w => w.hasIssues).length;
+
+    res.json({
+      success: true,
+      websites: userWebsites,
+      securityScore,
+      activeAlerts,
+      totalWebsites: userWebsites.length
+    });
+  } catch (error) {
+    console.error('Dashboard error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// Add Website
+app.post('/api/websites', authenticateToken, async (req, res) => {
+  try {
+    const { url } = req.body;
+    const userId = req.user.userId;
+
+    // Validate URL
+    if (!url || !url.startsWith('http')) {
+      return res.status(400).json({ success: false, message: 'Invalid URL' });
+    }
+
+    // Check if website already exists for this user
+    const existing = websites.find(w => w.userId === userId && w.url === url);
+    if (existing) {
+      return res.status(400).json({ success: false, message: 'Website already being monitored' });
+    }
+
+    // Create website entry
+    const website = {
+      id: websites.length + 1,
+      userId,
+      url,
+      status: 'checking',
+      sslStatus: 'checking',
+      responseTime: null,
+      lastChecked: new Date(),
+      hasIssues: false,
+      createdAt: new Date()
+    };
+
+    websites.push(website);
+
+    // Perform initial check (async)
+    checkWebsite(website.id);
+
+    res.json({
+      success: true,
+      website
+    });
+  } catch (error) {
+    console.error('Add website error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// Delete Website
+app.delete('/api/websites/:id', authenticateToken, (req, res) => {
+  try {
+    const websiteId = parseInt(req.params.id);
+    const userId = req.user.userId;
+
+    // Find website index
+    const index = websites.findIndex(w => w.id === websiteId && w.userId === userId);
+    if (index === -1) {
+      return res.status(404).json({ success: false, message: 'Website not found' });
+    }
+
+    // Remove website
+    websites.splice(index, 1);
+
+    res.json({ success: true, message: 'Website removed' });
+  } catch (error) {
+    console.error('Delete website error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// Check Website Function (runs async)
+async function checkWebsite(websiteId) {
+  const website = websites.find(w => w.id === websiteId);
+  if (!website) return;
+
+  try {
+    console.log(`Checking website: ${website.url}`);
+    
+    // Check if site is up
+    const startTime = Date.now();
+    const response = await axios.get(website.url, { 
+      timeout: 10000,
+      validateStatus: () => true 
+    });
+    const responseTime = Date.now() - startTime;
+
+    // Update website status
+    website.status = response.status < 400 ? 'online' : 'issues';
+    website.responseTime = responseTime;
+    website.lastChecked = new Date();
+    
+    // Check SSL (simple check based on URL)
+    website.sslStatus = website.url.startsWith('https') ? 'secure' : 'insecure';
+    
+    // Determine if has issues
+    website.hasIssues = website.status !== 'online' || website.sslStatus !== 'secure' || responseTime > 3000;
+
+    console.log(`Check complete for ${website.url}: Status=${website.status}, SSL=${website.sslStatus}, ResponseTime=${responseTime}ms`);
+
+    // Store monitoring result
+    monitoringResults.push({
+      websiteId,
+      timestamp: new Date(),
+      status: website.status,
+      responseTime,
+      sslStatus: website.sslStatus
+    });
+
+  } catch (error) {
+    console.error(`Error checking website ${website.url}:`, error.message);
+    website.status = 'offline';
+    website.sslStatus = 'unknown';
+    website.hasIssues = true;
+    website.lastChecked = new Date();
+  }
+}
+
+// Monitoring Cron Job - Check all websites every 5 minutes
+setInterval(() => {
+  console.log('⏰ Running scheduled monitoring check...');
+  websites.forEach(website => {
+    checkWebsite(website.id);
+  });
+  console.log('✅ Monitoring check completed');
+}, 5 * 60 * 1000); // 5 minutes
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`
+🚀 SafeSiteWatch Backend Server Running!
+📍 Port: ${PORT}
+🔗 API URL: http://localhost:${PORT}/api
+✅ Health Check: http://localhost:${PORT}/api/health
+
+Available endpoints:
+- POST /api/auth/register
+- POST /api/auth/login
+- GET /api/dashboard (requires auth)
+- POST /api/websites (requires auth)
+- DELETE /api/websites/:id (requires auth)
+  `);
+});
