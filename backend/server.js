@@ -10,7 +10,19 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+const corsOptions = {
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:8080',
+    'https://safesitewatch-e3rzdxk1c-james-neffs-projects.vercel.app',
+    'https://safesitewatch-live-orl00wwxp-james-neffs-projects.vercel.app',
+    'https://safesitewatch.net',
+    'https://www.safesitewatch.net'
+  ],
+  credentials: true
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // In-memory database (for testing - replace with PostgreSQL later)
