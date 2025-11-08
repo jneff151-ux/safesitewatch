@@ -18,6 +18,53 @@ function App() {
   const [companyName, setCompanyName] = useState('');
   const [error, setError] = useState('');
 
+   // Inject animation styles
+  useEffect(() => {
+    const styleElement = document.createElement('style');
+    styleElement.innerHTML = `
+      @keyframes pulse {
+        0% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.7; transform: scale(1.1); }
+        100% { opacity: 1; transform: scale(1); }
+      }
+      
+      @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      
+      .pulse-indicator {
+        animation: pulse 2s infinite;
+        display: inline-block;
+      }
+      
+      .rotate-indicator {
+        animation: rotate 2s linear infinite;
+        display: inline-block;
+      }
+      
+      .monitoring-active {
+        background: linear-gradient(270deg, #667eea, #764ba2, #667eea);
+        background-size: 200% 200%;
+        animation: gradient-shift 3s ease infinite;
+      }
+      
+      @keyframes gradient-shift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+    `;
+    document.head.appendChild(styleElement);
+    
+    return () => {
+      if (styleElement && styleElement.parentNode) {
+        styleElement.parentNode.removeChild(styleElement);
+      }
+    };
+  }, []);
+    
+
   // Check if user is logged in
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -256,22 +303,14 @@ function App() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats Overview */}
+        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm font-medium">Security Score</p>
-                <p className={`text-4xl font-bold mt-2 ${
-                  stats.securityScore >= 80 ? 'text-green-500' :
-                  stats.securityScore >= 60 ? 'text-yellow-500' : 'text-red-500'
-                }`}>
-                  {stats.securityScore}
-                </p>
-                <p className="text-sm text-gray-600 mt-1">
-                  {stats.securityScore >= 80 ? 'Excellent' :
-                   stats.securityScore >= 60 ? 'Good' : 'Needs Attention'}
-                </p>
+                <p className="text-4xl font-bold mt-2 text-green-500">{stats.securityScore}</p>
+                <p className="text-sm text-gray-600 mt-1">Overall health</p>
               </div>
               <div className="text-4xl">🛡️</div>
             </div>
@@ -292,14 +331,8 @@ function App() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm font-medium">Active Alerts</p>
-                <p className={`text-4xl font-bold mt-2 ${
-                  stats.activeAlerts > 0 ? 'text-red-500' : 'text-green-500'
-                }`}>
-                  {stats.activeAlerts}
-                </p>
-                <p className="text-sm text-gray-600 mt-1">
-                  {stats.activeAlerts > 0 ? 'Action needed' : 'All clear'}
-                </p>
+                <p className="text-4xl font-bold mt-2 text-red-500">{stats.activeAlerts}</p>
+                <p className="text-sm text-gray-600 mt-1">Need attention</p>
               </div>
               <div className="text-4xl">🚨</div>
             </div>
@@ -312,7 +345,7 @@ function App() {
           {!showAddWebsite ? (
             <button
               onClick={() => setShowAddWebsite(true)}
-              className="bg-indigo-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-600 transition"
+              className="bg-indigo-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-600"
             >
               + Add Website to Monitor
             </button>
@@ -329,7 +362,7 @@ function App() {
               <div className="flex gap-4">
                 <button
                   onClick={handleAddWebsite}
-                  className="bg-indigo-500 text-white px-6 py-2 rounded-lg hover:bg-indigo-600 transition"
+                  className="bg-indigo-500 text-white px-6 py-2 rounded-lg hover:bg-indigo-600"
                 >
                   Start Monitoring
                 </button>
@@ -338,7 +371,7 @@ function App() {
                     setShowAddWebsite(false);
                     setNewWebsiteUrl('');
                   }}
-                  className="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-400 transition"
+                  className="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-400"
                 >
                   Cancel
                 </button>
@@ -351,7 +384,7 @@ function App() {
         <div className="bg-white rounded-lg shadow">
           <div className="px-6 py-4 border-b">
             <h2 className="text-xl font-semibold">Your Monitored Websites</h2>
-            <p className="text-gray-600 text-sm mt-1">We check each site every 30 minutes</p>
+            <p className="text-gray-600 text-sm mt-1">Checking every 30 minutes</p>
           </div>
           <div className="p-6">
             {websites.length === 0 ? (
@@ -359,58 +392,44 @@ function App() {
                 <div className="text-6xl mb-4">🔍</div>
                 <p className="text-gray-500 mb-4">No websites added yet</p>
                 <p className="text-gray-400 text-sm">
-                  Click "Add Website to Monitor" to start protecting your sites
+                  Add a website above to start monitoring
                 </p>
               </div>
             ) : (
               <div className="space-y-4">
                 {websites.map((website) => (
-                  <div key={website.id} className="border rounded-lg p-5 hover:shadow-md transition">
+                  <div key={website.id} className="border rounded-lg p-5 hover:shadow-lg transition">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-3">
-                          <h3 className="text-lg font-semibold text-gray-800">
-                            {website.name || website.url}
-                          </h3>
-                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            website.current_status === 'up' 
-                              ? 'bg-green-100 text-green-800'
-                              : website.current_status === 'down'
-                              ? 'bg-red-100 text-red-800'
-                              : 'bg-gray-100 text-gray-800'
-                          }`}>
-                            {website.current_status === 'up' ? '● ONLINE' : 
-                             website.current_status === 'down' ? '● OFFLINE' : '● CHECKING'}
-                          </span>
-                        </div>
-                        <div className="text-sm text-gray-600">
-                          <a href={website.url} target="_blank" rel="noopener noreferrer" 
-                             className="hover:text-indigo-500 underline">
-                            {website.url}
-                          </a>
-                        </div>
-                        <div className="flex gap-6 mt-3 text-sm">
-                          <span className="text-gray-600">
-                            <strong>Response:</strong> {website.last_response_time || 'Checking...'}
-                            {website.last_response_time && 'ms'}
-                          </span>
-                          <span className="text-gray-600">
-                            <strong>SSL:</strong> {
-                              website.ssl_days_remaining 
-                                ? `Valid (${website.ssl_days_remaining} days remaining)`
-                                : 'Checking...'
-                            }
-                          </span>
-                        </div>
-                      </div>
+                        <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                          {website.url}
+                        </h3>
+                        <div className="grid grid-cols-3 gap-4 text-sm">
+  <div>
+    <span className="text-gray-600">Status: </span>
+    <span className={website.status === 'online' ? 'text-green-600' : 'text-red-600'}>
+      <span className="pulse-indicator" style={{display: 'inline-block'}}>●</span> {website.status || 'Checking...'}
+    </span>
+  </div>
+  <div>
+    <span className="text-gray-600">SSL: </span>
+    <span className={website.sslStatus === 'secure' ? 'text-green-600' : 'text-yellow-600'}>
+      <span className="pulse-indicator" style={{display: 'inline-block'}}>🔒</span> {website.sslStatus || 'Checking...'}
+    </span>
+  </div>
+  <div>
+    <span className="text-gray-600">Speed: </span>
+    <span>
+      <span className="rotate-indicator" style={{display: 'inline-block'}}>⚡</span> {website.responseTime ? `${website.responseTime}ms` : 'Checking...'}
+    </span>
+  </div>
+</div>
+                          </div>
                       <button
                         onClick={() => handleRemoveWebsite(website.id)}
-                        className="text-red-500 hover:text-red-700 ml-4 p-2"
-                        title="Remove from monitoring"
+                        className="text-red-500 hover:text-red-700 ml-4 font-medium"
                       >
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-                        </svg>
+                        Remove
                       </button>
                     </div>
                   </div>
@@ -423,31 +442,19 @@ function App() {
         {/* Info Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-            <div className="flex items-start">
-              <span className="text-3xl mr-4">💡</span>
-              <div>
-                <h4 className="font-semibold text-blue-900 mb-2">How It Works</h4>
-                <p className="text-blue-700 text-sm">
-                  We check your websites every 30 minutes for uptime, SSL certificate status, 
-                  and security issues. If anything goes wrong, you'll get an instant email alert 
-                  so you can fix issues before customers notice.
-                </p>
-              </div>
-            </div>
+            <h4 className="font-semibold text-blue-900 mb-2">💡 How It Works</h4>
+            <p className="text-blue-700 text-sm">
+              We monitor your websites every 30 minutes checking uptime, SSL certificates, 
+              and response times. Get instant alerts if issues are detected.
+            </p>
           </div>
           
           <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-            <div className="flex items-start">
-              <span className="text-3xl mr-4">🎯</span>
-              <div>
-                <h4 className="font-semibold text-green-900 mb-2">Free Trial Active</h4>
-                <p className="text-green-700 text-sm">
-                  You're on the 7-day free trial with full access to all features. 
-                  No credit card required. Monitor up to 10 websites and get unlimited alerts.
-                  Upgrade anytime for just $29/month.
-                </p>
-              </div>
-            </div>
+            <h4 className="font-semibold text-green-900 mb-2">🎯 Free Trial</h4>
+            <p className="text-green-700 text-sm">
+              7-day free trial active. No credit card required. 
+              Full features. $29/month after trial.
+            </p>
           </div>
         </div>
       </main>

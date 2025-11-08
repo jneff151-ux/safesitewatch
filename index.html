@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeSiteWatch - Website Security Monitoring Made Simple</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .faq-answer.active {
+            max-height: 500px;
+            transition: max-height 0.3s ease-in;
+        }
+    </style>
+</head>
+<body class="font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b fixed w-full top-0 z-50">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold text-indigo-600">🛡️ SafeSiteWatch</h1>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#features" class="text-gray-600 hover:text-indigo-600">Features</a>
+                    <a href="#how-it-works" class="text-gray-600 hover:text-indigo-600">How It Works</a>
+                    <a href="#pricing" class="text-gray-600 hover:text-indigo-600">Pricing</a>
+                    <a href="#faq" class="text-gray-600 hover:text-indigo-600">FAQ</a>
+                    <a href="#support" class="text-gray-600 hover:text-indigo-600">Support</a>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="https://safesitewatch-e3rzdxk1c-james-neffs-projects.vercel.app" class="text-indigo-600 hover:text-indigo-700 font-medium">Login</a>
+                    <a href="https://safesitewatch-e3rzdxk1c-james-neffs-projects.vercel.app" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">Start Free Trial</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg text-white pt-24 pb-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="text-center">
+    <h1 class="text-5xl md:text-6xl font-black mb-3 uppercase">PROTECT YOUR WEBSITE</h1>
+    <p class="text-xl md:text-2xl font-semibold uppercase opacity-90">DON'T WAIT UNTIL IT'S TOO LATE</p>
+</div>
+            <p class="text-xl mb-8 opacity-90">24/7 monitoring for SSL, security, and uptime. Get instant alerts when something goes wrong.</p>
+            <div class="flex justify-center space-x-4">
+                <a href="https://safesitewatch-e3rzdxk1c-james-neffs-projects.vercel.app" class="bg-white text-indigo-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 pulse-animation">
+                    Start 7-Day Free Trial
+                </a>
+                <a href="#features" class="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-indigo-600">
+                    See Features
+                </a>
+            </div>
+            <p class="mt-4 opacity-75">No credit card required • Cancel anytime</p>
+        </div>
+    </section>
+
+    <!-- Trust Indicators -->
+    <section class="bg-gray-50 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div>
+                    <div class="text-3xl font-bold text-indigo-600">10,000+</div>
+                    <div class="text-gray-600">Checks Per Day</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-indigo-600">99.9%</div>
+                    <div class="text-gray-600">Uptime SLA</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-indigo-600">5 min</div>
+                    <div class="text-gray-600">Check Intervals</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-indigo-600">24/7</div>
+                    <div class="text-gray-600">Monitoring</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Everything You Need to Stay Secure</h2>
+                <p class="text-xl text-gray-600">Comprehensive monitoring that catches issues before your customers do</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition">
+                    <div class="text-4xl mb-4">🔒</div>
+                    <h3 class="text-xl font-bold mb-3">SSL Certificate Monitoring</h3>
+                    <p class="text-gray-600 mb-4">Track expiration dates, validate certificates, and get alerts 30 days before expiry.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>✓ Expiration warnings</li>
+                        <li>✓ Certificate validation</li>
+                        <li>✓ Chain verification</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition">
+                    <div class="text-4xl mb-4">🚨</div>
+                    <h3 class="text-xl font-bold mb-3">Instant Breach Alerts</h3>
+                    <p class="text-gray-600 mb-4">Get notified immediately via email with step-by-step recovery instructions.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>✓ Email alerts</li>
+                        <li>✓ SMS notifications (coming soon)</li>
+                        <li>✓ Detailed fix instructions</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition">
+                    <div class="text-4xl mb-4">📊</div>
+                    <h3 class="text-xl font-bold mb-3">Security Headers Analysis</h3>
+                    <p class="text-gray-600 mb-4">Automatic grading of security headers with recommendations for improvement.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>✓ A-F security grading</li>
+                        <li>✓ HSTS, CSP, X-Frame checks</li>
+                        <li>✓ Fix recommendations</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition">
+                    <div class="text-4xl mb-4">⚡</div>
+                    <h3 class="text-xl font-bold mb-3">Performance Monitoring</h3>
+                    <p class="text-gray-600 mb-4">Track response times and get alerts when your site slows down.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>✓ Response time tracking</li>
+                        <li>✓ Global monitoring</li>
+                        <li>✓ Performance trends</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition">
+                    <div class="text-4xl mb-4">🌐</div>
+                    <h3 class="text-xl font-bold mb-3">Uptime Monitoring</h3>
+                    <p class="text-gray-600 mb-4">Know immediately when your website goes down with detailed reports.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>✓ 30-minute checks</li>
+                        <li>✓ Downtime history</li>
+                        <li>✓ Uptime percentage</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition">
+                    <div class="text-4xl mb-4">📈</div>
+                    <h3 class="text-xl font-bold mb-3">Weekly Reports</h3>
+                    <p class="text-gray-600 mb-4">Comprehensive weekly summaries of your website's health.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>✓ Health score trends</li>
+                        <li>✓ Issue summaries</li>
+                        <li>✓ Performance metrics</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="bg-gray-50 py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Start Protecting Your Website in 3 Steps</h2>
+                <p class="text-xl text-gray-600">Get set up in less than 60 seconds</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="bg-indigo-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-3xl font-bold text-indigo-600">1</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Sign Up</h3>
+                    <p class="text-gray-600">Create your account with just email and password. No credit card needed.</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-indigo-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-3xl font-bold text-indigo-600">2</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Add Your Website</h3>
+                    <p class="text-gray-600">Enter your website URL. We'll immediately scan for security issues.</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-indigo-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-3xl font-bold text-indigo-600">3</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Relax & Stay Protected</h3>
+                    <p class="text-gray-600">We monitor 24/7 and alert you instantly if anything needs attention.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Simple, Transparent Pricing</h2>
+                <p class="text-xl text-gray-600">One plan. All features. No surprises.</p>
+            </div>
+            
+            <div class="max-w-md mx-auto">
+                <div class="border-2 border-indigo-600 rounded-xl p-8 bg-white shadow-xl">
+                    <div class="text-center mb-6">
+                        <h3 class="text-3xl font-bold mb-2">SafeSiteWatch Professional</h3>
+                        <div class="text-5xl font-bold mb-2">$29<span class="text-lg text-gray-500">/month</span></div>
+                        <p class="text-green-600 font-semibold">7-Day Free Trial • No Credit Card Required</p>
+                    </div>
+                    
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> <strong>Monitor up to 10 websites</strong></li>
+                        <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Checks every 5 minutes (288 times/day!)</li>
+                        <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Real SSL certificate monitoring</li>
+                        <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Advanced security header analysis</li>
+                        <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> A-F security grading</li>
+                        <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Instant email alerts</li>
+                        <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Performance monitoring</li>
+                        <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Health score tracking</li>
+                        <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Live chat support</li>
+                        <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> No setup fees</li>
+                        <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Cancel anytime</li>
+                    </ul>
+                    
+                    <a href="https://safesitewatch-e3rzdxk1c-james-neffs-projects.vercel.app" class="block text-center bg-indigo-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-indigo-700 transition">
+                        Start Monitoring Now →
+                    </a>
+                    
+                    <div class="mt-6 pt-6 border-t text-center">
+                        <p class="text-gray-600 text-sm">
+                            <strong>Why just one plan?</strong><br>
+                            We believe every website deserves professional security monitoring. 
+                            No confusing tiers. No feature restrictions. Just powerful protection at a fair price.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Coming Soon Box -->
+            <div class="max-w-2xl mx-auto mt-12 bg-gray-50 rounded-lg p-6 text-center">
+                <h4 class="font-bold text-lg mb-2">🚀 Coming Soon</h4>
+                <p class="text-gray-600 mb-4">We're constantly improving SafeSiteWatch. Here's what's next:</p>
+                <div class="grid md:grid-cols-3 gap-4 text-sm">
+                    <div>
+                        <span class="font-semibold">SMS Alerts</span><br>
+                        <span class="text-gray-500">Q1 2025</span>
+                    </div>
+                    <div>
+                        <span class="font-semibold">API Access</span><br>
+                        <span class="text-gray-500">Q2 2025</span>
+                    </div>
+                    <div>
+                        <span class="font-semibold">Custom Reports</span><br>
+                        <span class="text-gray-500">Q2 2025</span>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-4">
+                    Need more than 10 websites? <a href="#support" class="text-indigo-600 hover:underline">Contact us</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="bg-gray-50 py-20">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Frequently Asked Questions</h2>
+                <p class="text-xl text-gray-600">Everything you need to know about SafeSiteWatch</p>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="bg-white rounded-lg shadow">
+                    <button onclick="toggleFAQ(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50">
+                        <span class="font-semibold">What happens when my website goes down?</span>
+                        <svg class="w-5 h-5 text-gray-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="faq-answer px-6 pb-4">
+                        <p class="text-gray-600">When we detect your website is down, we immediately send you an email alert with details about the issue. The alert includes the exact time, error type, and step-by-step instructions to fix it.</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow">
+                    <button onclick="toggleFAQ(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50">
+                        <span class="font-semibold">How does SSL certificate monitoring work?</span>
+                        <svg class="w-5 h-5 text-gray-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="faq-answer px-6 pb-4">
+                        <p class="text-gray-600">We check your SSL certificate every day, tracking its expiration date and validity. Starting 30 days before expiration, we send you reminder emails with increasing frequency.</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow">
+                    <button onclick="toggleFAQ(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50">
+                        <span class="font-semibold">Can I cancel anytime?</span>
+                        <svg class="w-5 h-5 text-gray-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="faq-answer px-6 pb-4">
+                        <p class="text-gray-600">Yes! You can cancel your subscription anytime from your dashboard with just one click. No phone calls, no hassle. You'll continue to have access until the end of your billing period.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Support Section -->
+    <section id="support" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">We're Here to Help</h2>
+                <p class="text-xl text-gray-600">Get in touch with our support team anytime</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Email Support</h3>
+                    <p class="text-gray-600 mb-2">Get help via email</p>
+                    <a href="mailto:support@safesitewatch.net" class="text-indigo-600 hover:underline">support@safesitewatch.net</a>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Live Chat</h3>
+                    <p class="text-gray-600 mb-2">Chat with our team</p>
+                    <p class="text-indigo-600">Look for the chat bubble →</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Documentation</h3>
+                    <p class="text-gray-600 mb-2">Detailed guides</p>
+                    <a href="#" class="text-indigo-600 hover:underline">View Docs</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="gradient-bg text-white py-20">
+        <div class="max-w-4xl mx-auto text-center px-4">
+            <h2 class="text-4xl font-bold mb-6">Start Your 7-Day Free Trial Today</h2>
+            <p class="text-xl mb-8 opacity-90">Join thousands of businesses that trust SafeSiteWatch</p>
+            <a href="https://safesitewatch-e3rzdxk1c-james-neffs-projects.vercel.app" class="bg-white text-indigo-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 inline-block">
+                Start Monitoring Now →
+            </a>
+            <p class="mt-4 opacity-75">No credit card required • Set up in 60 seconds</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p>&copy; 2024 SafeSiteWatch. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/690cb68143ae26195bde3a99/1j9cqhql5';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+    </script>
+    <!--End of Tawk.to Script-->
+
+    <script>
+        // FAQ Toggle
+        function toggleFAQ(button) {
+            const answer = button.nextElementSibling;
+            const icon = button.querySelector('svg');
+            
+            answer.classList.toggle('active');
+            icon.classList.toggle('rotate-180');
+        }
+        
+        // Smooth Scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

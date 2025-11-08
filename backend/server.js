@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
 require('dotenv').config();
-
+const { performCompleteScan } = require('./monitoringService');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -48,7 +48,12 @@ const authenticateToken = (req, res, next) => {
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ success: true, message: 'SafeSiteWatch API is running!' });
+  // Simple test endpoint - ADD THIS
+res.json({ success: true, message: 'SafeSiteWatch API is running!' });
+});
+app.get('/api/test', (req, res) => {
+  console.log('TEST ENDPOINT HIT!');
+  res.json({ message: 'Backend is working!' });
 });
 
 // Register
@@ -137,8 +142,14 @@ app.get('/api/dashboard', authenticateToken, (req, res) => {
     // Get user's websites
     const userWebsites = websites.filter(w => w.userId === userId);
     
-    // Calculate security score (mock data for now)
-    const securityScore = userWebsites.length > 0 ? 92 : 100;
+    // Calculate REAL security score from actual health scores
+let securityScore = 100;
+if (userWebsites.length > 0) {
+  const totalHealth = userWebsites.reduce((sum, site) => {
+    return sum + (site.healthScore || 0);
+  }, 0);
+  securityScore = Math.round(totalHealth / userWebsites.length);
+}
     const activeAlerts = userWebsites.filter(w => w.hasIssues).length;
 
     res.json({
@@ -156,9 +167,11 @@ app.get('/api/dashboard', authenticateToken, (req, res) => {
 
 // Add Website
 app.post('/api/websites', authenticateToken, async (req, res) => {
-  try {
+    console.log('=== ADD WEBSITE ENDPOINT HIT ===');
+    try {
     const { url } = req.body;
     const userId = req.user.userId;
+    console.log('Adding website:', url, 'for user:', userId);
 
     // Validate URL
     if (!url || !url.startsWith('http')) {
@@ -227,51 +240,66 @@ async function checkWebsite(websiteId) {
   if (!website) return;
 
   try {
-    console.log(`Checking website: ${website.url}`);
+    console.log(`🔍 Performing enhanced scan for ${website.url}`);
     
-    // Check if site is up
-    const startTime = Date.now();
-    const response = await axios.get(website.url, { 
-      timeout: 10000,
-      validateStatus: () => true 
-    });
-    const responseTime = Date.now() - startTime;
-
-    // Update website status
-    website.status = response.status < 400 ? 'online' : 'issues';
-    website.responseTime = responseTime;
+    // Use our professional monitoring service
+    const scanResults = await performCompleteScan(website.url);
+    
+    // Update website with detailed results
+    website.status = scanResults.status.isUp ? 'online' : 'offline';
+    website.responseTime = scanResults.status.responseTime;
+    website.sslStatus = scanResults.ssl.valid ? 'secure' : 'insecure';
+    website.sslDaysRemaining = scanResults.ssl.daysRemaining || null;
+    website.securityScore = scanResults.security.score || 0;
+    website.securityGrade = scanResults.security.grade || 'Unknown';
+    website.healthScore = scanResults.healthScore;
     website.lastChecked = new Date();
+    website.hasIssues = !scanResults.status.isUp || !scanResults.ssl.valid || scanResults.healthScore < 80;
     
-    // Check SSL (simple check based on URL)
-    website.sslStatus = website.url.startsWith('https') ? 'secure' : 'insecure';
+    // Store detailed scan results
+    website.lastScanResults = {
+      ssl: scanResults.ssl,
+      security: scanResults.security,
+      performance: scanResults.status.performance,
+      dns: scanResults.dns,
+      issues: scanResults.status.issues
+    };
     
-    // Determine if has issues
-    website.hasIssues = website.status !== 'online' || website.sslStatus !== 'secure' || responseTime > 3000;
-
-    console.log(`Check complete for ${website.url}: Status=${website.status}, SSL=${website.sslStatus}, ResponseTime=${responseTime}ms`);
+    console.log(`✅ Enhanced scan complete for ${website.url}`);
+    console.log(`   Health Score: ${scanResults.healthScore}/100`);
+    console.log(`   SSL: ${website.sslStatus} (${website.sslDaysRemaining || 'N/A'} days remaining)`);
+    console.log(`   Security Grade: ${website.securityGrade}`);
+    console.log(`   Response Time: ${website.responseTime}ms`);
 
     // Store monitoring result
     monitoringResults.push({
       websiteId,
       timestamp: new Date(),
       status: website.status,
-      responseTime,
-      sslStatus: website.sslStatus
+      responseTime: website.responseTime,
+      sslStatus: website.sslStatus,
+      healthScore: website.healthScore,
+      securityGrade: website.securityGrade
     });
 
   } catch (error) {
-    console.error(`Error checking website ${website.url}:`, error.message);
+    console.error(`❌ Error checking website ${website.url}:`, error.message);
     website.status = 'offline';
     website.sslStatus = 'unknown';
     website.hasIssues = true;
     website.lastChecked = new Date();
+    website.healthScore = 0;
   }
 }
+
+  
 
 // Monitoring Cron Job - Check all websites every 5 minutes
 setInterval(() => {
   console.log('⏰ Running scheduled monitoring check...');
+  console.log('Number of websites to check:', websites.length);
   websites.forEach(website => {
+    console.log('Checking website:', website.url);
     checkWebsite(website.id);
   });
   console.log('✅ Monitoring check completed');
