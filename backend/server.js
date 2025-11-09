@@ -16,6 +16,7 @@ const corsOptions = {
     'http://localhost:8080',
     'https://safesitewatch-e3rzdxk1c-james-neffs-projects.vercel.app',
     'https://safesitewatch-live-orl00wwxp-james-neffs-projects.vercel.app',
+    'https://safesitewatch-ean6wvu8a-james-neffs-projects.vercel.app',
     'https://safesitewatch.net',
     'https://www.safesitewatch.net'
   ],
