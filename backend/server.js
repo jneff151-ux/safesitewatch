@@ -14,7 +14,7 @@ const corsOptions = {
   origin: [
     'http://localhost:3000',
     'http://localhost:8080',
-    'https://safesitewatch-app.vercel.app',
+    'https://app.safesitewatch.net',
     'https://safesitewatch.net',
     'https://www.safesitewatch.net'
   ],
