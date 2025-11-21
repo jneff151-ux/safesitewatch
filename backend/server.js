@@ -199,6 +199,7 @@ app.post('/api/websites', authenticateToken, async (req, res) => {
     const website = {
       id: websites.length + 1,
       userId,
+      userEmail: req.user.email,
       url,
       status: 'checking',
       sslStatus: 'checking',
@@ -252,6 +253,9 @@ async function checkWebsite(websiteId) {
 
   try {
     console.log(`🔍 Performing enhanced scan for ${website.url}`);
+
+    // Pass the user's email for alerts!
+    const scanResults = await performCompleteScan(website.url, website.userEmail);
     
     // Use our professional monitoring service
     const scanResults = await performCompleteScan(website.url);

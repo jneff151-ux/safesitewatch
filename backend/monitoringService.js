@@ -1,3 +1,6 @@
+const { sendDownAlert, sendBreachAlert } = require('./services/emailService');
+const { checkForBreaches } = require('./services/breachDetection');
+
 // monitoringService.js - Enhanced Monitoring Service
 const https = require('https');
 const http = require('http');
@@ -95,14 +98,14 @@ async function checkSSLCertificate(urlString) {
   }
 }
 
-// Enhanced Uptime & Performance Check
-async function checkWebsiteStatus(urlString) {
+// Enhanced Uptime & Performance Check with Breach Detection
+async function checkWebsiteStatus(urlString, userEmail = null) {
   const startTime = Date.now();
   
   try {
     const response = await axios.get(urlString, {
       timeout: 30000,
-      validateStatus: () => true, // Accept any status
+      validateStatus: () => true,
       maxRedirects: 5,
       headers: {
         'User-Agent': 'SafeSiteWatch Monitor/1.0'
@@ -127,6 +130,33 @@ async function checkWebsiteStatus(urlString) {
       issues.push('Slow response time (>5 seconds)');
     }
 
+    // ========== ADD BREACH DETECTION ==========
+    let breaches = [];
+    if (response.status < 400 && response.data) {
+      const website = { url: urlString };
+      breaches = await checkForBreaches(website);
+      
+      if (breaches.length > 0 && userEmail) {
+        console.log(`🚨 BREACH DETECTED on ${urlString}!`);
+        for (const breach of breaches) {
+          if (breach.severity === 'CRITICAL') {
+            await sendBreachAlert({ url: urlString }, userEmail, breach);
+          }
+        }
+      }
+    }
+    
+    // Send DOWN alert if site is not accessible
+    if (response.status >= 500 && userEmail) {
+      console.log(`🔴 ${urlString} is DOWN!`);
+      await sendDownAlert(
+        { url: urlString },
+        userEmail,
+        `Server Error: ${response.status} ${response.statusText}`
+      );
+    }
+    // ========== END ALERTS ==========
+
     // Get page size
     const contentLength = response.headers['content-length'] || 
       (response.data ? response.data.length : 0);
@@ -138,6 +168,7 @@ async function checkWebsiteStatus(urlString) {
       statusText: response.statusText,
       responseTime,
       issues,
+      breaches: breaches.length > 0 ? breaches : null,  // ADD THIS
       performance: {
         responseTime,
         pageSizeKB,
@@ -152,12 +183,19 @@ async function checkWebsiteStatus(urlString) {
       }
     };
   } catch (error) {
+    // Site is completely unreachable - SEND ALERT
+    if (userEmail) {
+      console.log(`🔴 ${urlString} is UNREACHABLE!`);
+      await sendDownAlert({ url: urlString }, userEmail, error.message);
+    }
+    
     return {
       isUp: false,
       statusCode: 0,
       statusText: error.message,
       responseTime: Date.now() - startTime,
       issues: [`Site unreachable: ${error.message}`],
+      breaches: null,
       performance: {
         responseTime: Date.now() - startTime,
         rating: 'Offline'
@@ -344,7 +382,7 @@ async function performCompleteScan(urlString) {
     domainResult
   ] = await Promise.allSettled([
     checkSSLCertificate(urlString),
-    checkWebsiteStatus(urlString),
+    checkWebsiteStatus(urlString, userEmail),
     checkSecurityHeaders(urlString),
     checkDNSHealth(urlString),
     checkDomainExpiration(urlString)

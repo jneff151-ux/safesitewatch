@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './index.css';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://safesitewatch-api.onrender.com/api';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -126,6 +126,12 @@ function App() {
 
   // Add website
   const handleAddWebsite = async () => {
+    // CHECK WEBSITE LIMIT FIRST
+    if (websites.length >= 3) {
+      alert('You can monitor up to 3 websites on the current plan. Contact support@safesitewatch.net to upgrade.');
+      return;
+    }
+    
     if (!newWebsiteUrl.startsWith('http://') && !newWebsiteUrl.startsWith('https://')) {
       alert('Please enter a valid URL starting with http:// or https://');
       return;
@@ -384,7 +390,7 @@ function App() {
         <div className="bg-white rounded-lg shadow">
           <div className="px-6 py-4 border-b">
             <h2 className="text-xl font-semibold">Your Monitored Websites</h2>
-            <p className="text-gray-600 text-sm mt-1">Checking every 30 minutes</p>
+            <p className="text-gray-600 text-sm mt-1">Checking every 5 minutes</p>
           </div>
           <div className="p-6">
             {websites.length === 0 ? (
@@ -442,18 +448,10 @@ function App() {
         {/* Info Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-            <h4 className="font-semibold text-blue-900 mb-2">💡 How It Works</h4>
+            <h4 className="font-semibold text-blue-900 mb-2">💡 System Analysis</h4>
             <p className="text-blue-700 text-sm">
-              We monitor your websites every 30 minutes checking uptime, SSL certificates, 
-              and response times. Get instant alerts if issues are detected.
-            </p>
-          </div>
-          
-          <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-            <h4 className="font-semibold text-green-900 mb-2">🎯 Free Trial</h4>
-            <p className="text-green-700 text-sm">
-              7-day free trial active. No credit card required. 
-              Full features. $29/month after trial.
+              <p className="text-gray-500">Our monitoring system will work diligently on protecting your added websites.</p>
+            
             </p>
           </div>
         </div>
