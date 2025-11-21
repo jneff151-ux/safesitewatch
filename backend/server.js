@@ -1,4 +1,5 @@
 // server.js - SafeSiteWatch Backend Server
+const { sendWelcomeEmail } = require('./services/emailService');
 const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
@@ -95,7 +96,10 @@ app.post('/api/auth/register', async (req, res) => {
     // Create token
     const token = createToken(user.id);
 
-    res.json({
+     // 🎉 SEND WELCOME EMAIL HERE! 🎉
+    await sendWelcomeEmail(email, companyName);
+
+          res.json({
       success: true,
       token,
       user: {
@@ -256,9 +260,6 @@ async function checkWebsite(websiteId) {
 
     // Pass the user's email for alerts!
     const scanResults = await performCompleteScan(website.url, website.userEmail);
-    
-    // Use our professional monitoring service
-    const scanResults = await performCompleteScan(website.url);
     
     // Update website with detailed results
     website.status = scanResults.status.isUp ? 'online' : 'offline';
