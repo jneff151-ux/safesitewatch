@@ -11,15 +11,25 @@ const transporter = nodemailer.createTransport({
   },
   tls: {
     rejectUnauthorized: false
-  }
+  },
+  pool: true,
+  maxConnections: 1,
+  rateDelta: 3000,
+  rateLimit: 5
 });
 
 // Send down alert
 const sendDownAlert = async (website, userEmail, error) => {
   try {
     await transporter.sendMail({
-      from: 'SafeSiteWatch Alerts <alerts@safesitewatch.net>',
+      from: '"SafeSiteWatch Alerts" <alerts@safesitewatch.net>',
       to: userEmail,
+      replyTo: 'support@safesitewatch.net',  
+      headers: { 
+        'X-Priority': '3',
+        'X-Mailer': 'SafeSiteWatch Mailer',
+        'List-Unsubscribe': '<mailto:support@safesitewatch.net>'
+      },
       subject: '🚨 URGENT: Your website is down!',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -48,8 +58,14 @@ const sendDownAlert = async (website, userEmail, error) => {
 const sendBreachAlert = async (website, userEmail, breach) => {
   try {
     await transporter.sendMail({
-      from: 'SafeSiteWatch Alerts <alerts@safesitewatch.net>',
+      from: '"SafeSiteWatch Alerts" <alerts@safesitewatch.net>',  // Added quotes around name
       to: userEmail,
+      replyTo: 'support@safesitewatch.net',  // Added replyTo
+      headers: {  // Added headers section
+        'X-Priority': '1',  // 1 for critical alerts
+        'X-Mailer': 'SafeSiteWatch Mailer',
+        'List-Unsubscribe': '<mailto:support@safesitewatch.net>'
+      },
       subject: '🚨🚨 CRITICAL: Security Breach Detected!',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -95,8 +111,14 @@ const testEmailConnection = async () => {
 const sendWelcomeEmail = async (userEmail, companyName) => {
   try {
     await transporter.sendMail({
-      from: 'SafeSiteWatch <alerts@safesitewatch.net>',
+      from: '"SafeSiteWatch" <alerts@safesitewatch.net>',  
       to: userEmail,
+      replyTo: 'support@safesitewatch.net',  
+      headers: {  
+        'X-Priority': '3',  
+        'X-Mailer': 'SafeSiteWatch Mailer',
+        'List-Unsubscribe': '<mailto:support@safesitewatch.net>'
+      },
       subject: '🎉 Welcome to SafeSiteWatch - Your Protection is Active!',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
