@@ -1,3 +1,4 @@
+require('dotenv').config();
 // server.js - SafeSiteWatch Backend Server
 const { sendWelcomeEmail } = require('./services/emailService');
 const express = require('express');
@@ -5,7 +6,6 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
-require('dotenv').config();
 const { performCompleteScan } = require('./monitoringService');
 const app = express();
 const PORT = process.env.PORT || 5000;
