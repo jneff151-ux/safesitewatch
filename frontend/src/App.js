@@ -17,6 +17,10 @@ function App() {
   const [password, setPassword] = useState('');
   const [companyName, setCompanyName] = useState('');
   const [error, setError] = useState('');
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetMessage, setResetMessage] = useState('');
+
 
    // Inject animation styles
   useEffect(() => {
@@ -195,94 +199,178 @@ function App() {
     );
   }
 
-  // Login/Register screen
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center p-4">
-        <div className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">🛡️ SafeSiteWatch</h1>
-            <p className="text-gray-600">Website Security Monitoring Made Simple</p>
-          </div>
-          
-          <div className="flex mb-6">
-            <button
-              onClick={() => {
-                setAuthMode('login');
-                setError('');
-              }}
-              className={`flex-1 py-2 font-semibold transition-colors ${
-                authMode === 'login' 
-                  ? 'border-b-2 border-indigo-500 text-indigo-500' 
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              Login
-            </button>
-            <button
-              onClick={() => {
-                setAuthMode('register');
-                setError('');
-              }}
-              className={`flex-1 py-2 font-semibold transition-colors ${
-                authMode === 'register' 
-                  ? 'border-b-2 border-indigo-500 text-indigo-500' 
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              Register
-            </button>
-          </div>
+  
+            
+// Add the forgot password handler
+const handleForgotPassword = async () => {
+  try {
+    const response = await axios.post(`${API_URL}/auth/forgot-password`, {
+      email: resetEmail
+    });
+    
+    if (response.data.success) {
+      setResetMessage('Reset email sent! Check your inbox.');
+      setTimeout(() => {
+        setShowForgotPassword(false);
+        setResetMessage('');
+        setResetEmail('');
+      }, 3000);
+    }
+  } catch (error) {
+    setResetMessage(error.response?.data?.message || 'Error sending reset email');
+  }
+};
 
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-              {error}
+// Login/Register screen
+if (!user) {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center p-4">
+      <div className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">🛡️ SafeSiteWatch</h1>
+          <p className="text-gray-600">Website Security Monitoring Made Simple</p>
+        </div>
+        
+        <div className="flex mb-6">
+          <button
+            onClick={() => {
+              setAuthMode('login');
+              setError('');
+            }}
+            className={`flex-1 py-2 font-semibold transition-colors ${
+              authMode === 'login' 
+                ? 'border-b-2 border-indigo-500 text-indigo-500' 
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Login
+          </button>
+          <button
+            onClick={() => {
+              setAuthMode('register');
+              setError('');
+            }}
+            className={`flex-1 py-2 font-semibold transition-colors ${
+              authMode === 'register' 
+                ? 'border-b-2 border-indigo-500 text-indigo-500' 
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Register
+          </button>
+        </div>
+
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {error}
+          </div>
+        )}
+        
+        <form onSubmit={handleAuth} className="space-y-4">
+          {authMode === 'register' && (
+            <input
+              type="text"
+              placeholder="Company Name"
+              className="w-full p-3 border rounded-lg focus:outline-none focus:border-indigo-500"
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
+            />
+          )}
+          <input
+            type="email"
+            placeholder="Email"
+            required
+            className="w-full p-3 border rounded-lg focus:outline-none focus:border-indigo-500"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            required
+            className="w-full p-3 border rounded-lg focus:outline-none focus:border-indigo-500"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          
+          {/* FORGOT PASSWORD LINK - NEW! */}
+          {authMode === 'login' && (
+            <div className="text-right">
+              <button 
+                type="button"
+                onClick={() => setShowForgotPassword(true)}
+                className="text-sm text-indigo-600 hover:text-indigo-500 font-medium"
+              >
+                Forgot your password?
+              </button>
             </div>
           )}
           
-          <form onSubmit={handleAuth} className="space-y-4">
-            {authMode === 'register' && (
-              <input
-                type="text"
-                placeholder="Company Name"
-                className="w-full p-3 border rounded-lg focus:outline-none focus:border-indigo-500"
-                value={companyName}
-                onChange={(e) => setCompanyName(e.target.value)}
-              />
-            )}
+          <button
+            type="submit"
+            className="w-full bg-indigo-500 text-white py-3 rounded-lg font-semibold hover:bg-indigo-600 transition"
+          >
+            {authMode === 'login' ? 'Login' : 'Start Free Trial'}
+          </button>
+        </form>
+        
+        {authMode === 'register' && (
+          <p className="text-center text-sm text-gray-600 mt-4">
+            7-day free trial • $17 first month • Then $29/month
+          </p>
+        )}
+      </div>
+
+      {/* FORGOT PASSWORD MODAL - NEW! */}
+      {showForgotPassword && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-xl shadow-2xl max-w-md w-full mx-4">
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">Reset Your Password</h3>
+            <p className="text-gray-600 mb-6">Enter your email and we'll send you reset instructions.</p>
+            
             <input
               type="email"
-              placeholder="Email"
-              required
-              className="w-full p-3 border rounded-lg focus:outline-none focus:border-indigo-500"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Your email address"
+              value={resetEmail}
+              onChange={(e) => setResetEmail(e.target.value)}
+              className="w-full p-3 border rounded-lg focus:outline-none focus:border-indigo-500 mb-4"
+              autoFocus
             />
-            <input
-              type="password"
-              placeholder="Password"
-              required
-              className="w-full p-3 border rounded-lg focus:outline-none focus:border-indigo-500"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <button
-              type="submit"
-              className="w-full bg-indigo-500 text-white py-3 rounded-lg font-semibold hover:bg-indigo-600 transition"
-            >
-              {authMode === 'login' ? 'Login' : 'Start Free Trial'}
-            </button>
-          </form>
-          
-          {authMode === 'register' && (
-            <p className="text-center text-sm text-gray-600 mt-4">
-              7-day free trial • No credit card required
-            </p>
-          )}
+            
+            {resetMessage && (
+              <div className={`p-3 rounded-lg mb-4 ${
+                resetMessage.includes('sent') 
+                  ? 'bg-green-100 text-green-700' 
+                  : 'bg-red-100 text-red-700'
+              }`}>
+                {resetMessage}
+              </div>
+            )}
+            
+            <div className="flex gap-4">
+              <button
+                onClick={handleForgotPassword}
+                className="flex-1 bg-indigo-500 text-white py-3 rounded-lg font-semibold hover:bg-indigo-600 transition"
+              >
+                Send Reset Email
+              </button>
+              <button
+                onClick={() => {
+                  setShowForgotPassword(false);
+                  setResetMessage('');
+                  setResetEmail('');
+                }}
+                className="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-    );
-  }
+      )}
+    </div>
+  );
+}
 
   // Main Dashboard
   return (
