@@ -197,6 +197,65 @@ const sendWelcomeEmail = async (userEmail, companyName) => {
   }
 };
 
+// Send password reset email
+const sendPasswordResetEmail = async (userEmail, resetToken) => {
+  const resetLink = `https://app.safesitewatch.net/reset-password?token=${resetToken}`;
+  
+  try {
+    await transporter.sendMail({
+      from: '"SafeSiteWatch" <alerts@safesitewatch.net>',
+      to: userEmail,
+      replyTo: 'support@safesitewatch.net',
+      headers: {
+        'X-Priority': '1',
+        'X-Mailer': 'SafeSiteWatch Mailer',
+        'List-Unsubscribe': '<mailto:support@safesitewatch.net>'
+      },
+      subject: '🔐 Password Reset Request - SafeSiteWatch',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+            <h1 style="margin: 0;">Password Reset Request</h1>
+          </div>
+          
+          <div style="padding: 30px; background: #f9fafb; border: 1px solid #e5e7eb; border-top: none;">
+            <p style="color: #4b5563; font-size: 16px;">
+              We received a request to reset your SafeSiteWatch password. Click the button below to create a new password.
+            </p>
+            
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${resetLink}" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 40px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
+                Reset My Password
+              </a>
+            </div>
+            
+            <div style="background: #fef3c7; padding: 15px; border-radius: 5px; margin: 20px 0;">
+              <p style="color: #92400e; margin: 0; font-size: 14px;">
+                <strong>⚠️ Security Note:</strong> This link expires in 1 hour. If you didn't request this, please ignore this email.
+              </p>
+            </div>
+            
+            <p style="color: #6b7280; font-size: 14px;">
+              If the button doesn't work, copy and paste this link:<br>
+              <span style="color: #3b82f6;">${resetLink}</span>
+            </p>
+            
+            <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
+            
+            <p style="color: #6b7280; font-size: 12px; text-align: center;">
+              © 2024 SafeSiteWatch • support@safesitewatch.net
+            </p>
+          </div>
+        </div>
+      `
+    });
+    console.log('Password reset email sent to:', userEmail);
+  } catch (error) {
+    console.error('Password reset email failed:', error);
+    throw error;
+  }
+};
+
 module.exports = {
   sendDownAlert,
   sendBreachAlert,
