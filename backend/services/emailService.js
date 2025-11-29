@@ -259,7 +259,8 @@ const sendPasswordResetEmail = async (userEmail, resetToken) => {
 module.exports = {
   sendDownAlert,
   sendBreachAlert,
-  sendWelcomeEmail,  
+  sendWelcomeEmail,
+  sendPasswordResetEmail,  
   testEmailConnection
 };
   
