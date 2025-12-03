@@ -9,27 +9,15 @@ const transporter = nodemailer.createTransport({
     user: 'alerts@safesitewatch.net',
     pass: process.env.EMAIL_PASSWORD 
   },
-  tls: {
-    rejectUnauthorized: false
-  },
-  pool: true,
-  maxConnections: 1,
-  rateDelta: 3000,
-  rateLimit: 5
+  
 });
 
 // Send down alert
 const sendDownAlert = async (website, userEmail, error) => {
   try {
     await transporter.sendMail({
-      from: '"SafeSiteWatch Alerts" <alerts@safesitewatch.net>',
+      from: 'alerts@safesitewatch.net',  
       to: userEmail,
-      replyTo: 'support@safesitewatch.net',  
-      headers: { 
-        'X-Priority': '3',
-        'X-Mailer': 'SafeSiteWatch Mailer',
-        'List-Unsubscribe': '<mailto:support@safesitewatch.net>'
-      },
       subject: '🚨 URGENT: Your website is down!',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -54,18 +42,12 @@ const sendDownAlert = async (website, userEmail, error) => {
   }
 };
 
-// Send breach alert
+      // Send breach alert
 const sendBreachAlert = async (website, userEmail, breach) => {
   try {
     await transporter.sendMail({
-      from: '"SafeSiteWatch Alerts" <alerts@safesitewatch.net>',  // Added quotes around name
+      from: 'alerts@safesitewatch.net',
       to: userEmail,
-      replyTo: 'support@safesitewatch.net',  // Added replyTo
-      headers: {  // Added headers section
-        'X-Priority': '1',  // 1 for critical alerts
-        'X-Mailer': 'SafeSiteWatch Mailer',
-        'List-Unsubscribe': '<mailto:support@safesitewatch.net>'
-      },
       subject: '🚨🚨 CRITICAL: Security Breach Detected!',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -95,30 +77,12 @@ const sendBreachAlert = async (website, userEmail, breach) => {
   }
 };
 
-// Test email connection
-const testEmailConnection = async () => {
-  try {
-    await transporter.verify();
-    console.log('Email server connection successful');
-    return true;
-  } catch (error) {
-    console.error('Email server connection failed:', error);
-    return false;
-  }
-};
-
 // Send welcome email
 const sendWelcomeEmail = async (userEmail, companyName) => {
   try {
     await transporter.sendMail({
-      from: '"SafeSiteWatch" <alerts@safesitewatch.net>',  
+      from: 'alerts@safesitewatch.net',  
       to: userEmail,
-      replyTo: 'support@safesitewatch.net',  
-      headers: {  
-        'X-Priority': '3',  
-        'X-Mailer': 'SafeSiteWatch Mailer',
-        'List-Unsubscribe': '<mailto:support@safesitewatch.net>'
-      },
       subject: '🎉 Welcome to SafeSiteWatch - Your Protection is Active!',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -203,14 +167,8 @@ const sendPasswordResetEmail = async (userEmail, resetToken) => {
   
   try {
     await transporter.sendMail({
-      from: '"SafeSiteWatch" <alerts@safesitewatch.net>',
+      from: 'alerts@safesitewatch.net',
       to: userEmail,
-      replyTo: 'support@safesitewatch.net',
-      headers: {
-        'X-Priority': '1',
-        'X-Mailer': 'SafeSiteWatch Mailer',
-        'List-Unsubscribe': '<mailto:support@safesitewatch.net>'
-      },
       subject: '🔐 Password Reset Request - SafeSiteWatch',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -261,6 +219,5 @@ module.exports = {
   sendBreachAlert,
   sendWelcomeEmail,
   sendPasswordResetEmail,  
-  testEmailConnection
 };
   
