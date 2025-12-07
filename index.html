@@ -312,32 +312,53 @@
                 <h2 class="text-4xl font-bold mb-4">Frequently Asked Questions</h2>
                 <p class="text-xl text-gray-600">Everything you need to know about SafeSiteWatch</p>
             </div>
-            
-            <div class="space-y-4">
-                <div class="bg-white rounded-lg shadow">
-                    <button onclick="toggleFAQ(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50">
-                        <span class="font-semibold">What happens when my website goes down?</span>
-                        <svg class="w-5 h-5 text-gray-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
-                    <div class="faq-answer px-6 pb-4">
-                        <p class="text-gray-600">When we detect your website is down, we immediately send you an email alert with details about the issue. The alert includes the exact time, error type, and step-by-step instructions to fix it.</p>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded-lg shadow">
-                    <button onclick="toggleFAQ(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50">
-                        <span class="font-semibold">How does SSL certificate monitoring work?</span>
-                        <svg class="w-5 h-5 text-gray-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
-                    <div class="faq-answer px-6 pb-4">
-                        <p class="text-gray-600">We check your SSL certificate every day, tracking its expiration date and validity. Starting 30 days before expiration, we send you reminder emails with increasing frequency.</p>
-                    </div>
-                </div>
-                
+
+    <!-- What SafeSiteWatch CAN Do -->
+<div class="bg-white rounded-lg shadow">
+    <button onclick="toggleFAQ(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50">
+        <span class="font-semibold">What SafeSiteWatch CAN do for my website?</span>
+        <svg class="w-5 h-5 text-gray-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+    </button>
+    <div class="faq-answer px-6 pb-4">
+        <p class="text-gray-600">SafeSiteWatch actively monitors and protects your website with:</p>
+        <ul class="list-disc ml-6 mt-2 text-gray-600">
+            <li>✅ Detection of security breaches and malware infections</li>
+            <li>✅ SSL certificate expiration monitoring</li>
+            <li>✅ Website uptime checks every 5 minutes</li>
+            <li>✅ Security header analysis</li>
+            <li>✅ Response time and performance tracking</li>
+            <li>✅ Instant email alerts for any issues</li>
+            <li>✅ Detailed security reports</li>
+            <li>✅ Vulnerability identification before hackers find them</li>
+        </ul>
+    </div>
+</div>
+
+<!-- What SafeSiteWatch CANNOT Do -->
+<div class="bg-white rounded-lg shadow">
+    <button onclick="toggleFAQ(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50">
+        <span class="font-semibold">What SafeSiteWatch does NOT do?</span>
+        <svg class="w-5 h-5 text-gray-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+    </button>
+    <div class="faq-answer px-6 pb-4">
+        <p class="text-gray-600"><strong>SafeSiteWatch is 100% read-only monitoring. We NEVER:</strong></p>
+        <ul class="list-disc ml-6 mt-2 text-gray-600">
+            <li>❌ Make ANY changes to your website</li>
+            <li>❌ Interfere with your website's operation</li>
+            <li>❌ Block visitors or traffic</li>
+            <li>❌ Modify your files or database</li>
+            <li>❌ Install anything on your server</li>
+            <li>❌ Require any code on your site</li>
+            <li>❌ Access your admin panel or hosting</li>
+        </ul>
+        <p class="text-gray-600 mt-3"><strong>We only watch and alert - we never touch!</strong> Think of us as a security camera, not a security guard. We observe and report issues so YOU can take action.</p>
+    </div>
+</div>
+
                 <div class="bg-white rounded-lg shadow">
                     <button onclick="toggleFAQ(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50">
                         <span class="font-semibold">Can I cancel anytime?</span>
