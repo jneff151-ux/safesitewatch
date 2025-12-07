@@ -371,7 +371,7 @@ async function checkDNSHealth(urlString) {
 }
 
 // Complete Website Analysis
-async function performCompleteScan(urlString) {
+async function performCompleteScan(urlString, userEmail = null) {
   console.log(`🔍 Starting complete scan for ${urlString}`);
   
   const [
